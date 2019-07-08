@@ -118,6 +118,7 @@ impl<T> Nlattr<T, Vec<u8>> where T: NlAttrType {
     /// Add a nested attribute to the end of the payload
     pub fn add_nested_attribute<TT, P>(&mut self, attr: Nlattr<TT, P>) -> Result<(), SerError>
             where TT: NlAttrType, P: Nl {
+        self.nla_len = alignto(self.nla_len as usize) as u16 + attr.nla_len;
         let size = self.payload.len() as u64;
         let mut buffer = StreamWriteBuffer::new_growable_ref(&mut self.payload);
         buffer.set_position(size);
